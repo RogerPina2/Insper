@@ -1,0 +1,3 @@
+[submodule "SisHard"]
+	path = SisHard
+	url = https://github.com/RogerPina2/SisHardSoft.git
