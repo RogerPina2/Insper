@@ -1,0 +1,9 @@
+https://www.dobitaobyte.com.br/bluetooth-hc-05-master-slave/
+
+hcitool scan
+
+sdptool records <endereço físico>
+
+sudo rfcomm bind /dev/rfcomm0 <endereço físico> (channel)
+
+rfcomm listen /dev/recomm0 
