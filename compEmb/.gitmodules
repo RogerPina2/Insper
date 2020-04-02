@@ -1,0 +1,6 @@
+[submodule "LABS"]
+	path = LABS
+	url = https://github.com/RogerPina2/LABS.git
+[submodule "SAME70-examples"]
+	path = SAME70-examples
+	url = https://github.com/Insper/SAME70-examples.git
