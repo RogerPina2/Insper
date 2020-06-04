@@ -1,0 +1,15 @@
+Aulas
+12: Introdução ao estudo de sistemas térmicos
+	• Descrever conceitos básicos de termodinâmica e transferência de
+	calor.
+	• Caracterizar o perfil de temperatura em um microprocessador
+	usando um software de simulação.
+13:
+14: Energia e a Primeira Lei da Termodinâmica
+15: Entropia e a Segunda Lei da Termodinâmica
+16: Introdução a transferência de calor
+17: Superfícies estendidas - Aletas
+18: Método das diferenças finitas
+19: Método das diferenças finitas Bidimensional
+20: Distribuição de temperatura em uma placa aquecida com condições de fluxo no contorno
+21: Estúdio para validação dos softwares

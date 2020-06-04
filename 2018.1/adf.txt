@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 26 20:45:22 2018
+
+@author: Roger Pina
+"""
+
+from firebase import firebase #armezando os dados em nuvem , usando Firebase
+firebase=firebase.FirebaseApplication('https://projetods-4f078.firebaseio.com/',None)
+if firebase.get('Estoque',None) is None:
+    estoque=dict()#estoque é representado por um dicionário
+estoque['w']=1
+
+firebase.put('https://projetods-4f078.firebaseio.com/', 'Estoque', estoque)
+
+============================================================================================================================
+
+
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 22 21:35:52 2018
+
+@author: Samuel Porto
+"""
+from firebase import firebase
+firebase=firebase.FirebaseApplication('https://projetods-4f078.firebaseio.com/',None)
+
+print('Olá, seja bem vindo ao sistema de estoque, qual loja você gostaria de acessar ?')
+loja = str(input('Loja: '))
+
+help(firebase) 
+
+if firebase.get(loja,None) is None:
+    estoque = {}
+    print('1')
+else:
+    print('2')
+
+firebase.put('https://projetods-4f078.firebaseio.com/', loja, estoque)

@@ -2,5 +2,5 @@
 	path = SisHard
 	url = https://github.com/RogerPina2/SisHardSoft.git
 [submodule "TransCal"]
-	path = TransCal
+	path = TransCaleMecSol/TransCal
 	url = https://github.com/RogerPina2/TransCalMecSol.git

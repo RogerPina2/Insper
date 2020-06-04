@@ -1,0 +1,87 @@
+===> RTOS <=== 
+(Real Time Operation Sistem)
+. trabalha com tasks
+
+* MODELO DE TASK 
+
+    static void task_led(void *pvParameters)
+    {
+        /* Block for 2000ms. */
+        const TickType_t xDelay = 2000 / portTICK_PERIOD_MS;
+
+        for (;;) {
+            LED_Toggle(LED0);
+            vTaskDelay(xDelay);
+        }
+    }
+
+* CRIAR UMA TASK 
+    (dica: dentro do main)
+
+    xTaskCreate(task_led, "Led", TASK_LED_STACK_SIZE, NULL,
+                TASK_LED_STACK_PRIORITY, NULL);
+
+## vale lembrar 
+
+    #define TASK_LED_STACK_SIZE                (1024/sizeof(portSTACK_TYPE))
+    #define TASK_LED_STACK_PRIORITY            (tskIDLE_PRIORITY)
+
+
+* SLEEP MODE
+    # em FreeRTOSConfig.h 
+        - #define configUSE_IDLE_HOOK   0
+        + #define configUSE_IDLE_HOOK   1
+
+    # em vApplicationIdleHook 
+        pmc_sleep(SAM_PM_SMODE_SLEEP_WFI)
+
+=========================================================================================================
+
+=> API - Comunicação entre task / IRQ <=
+(Objetivo : Comunicar a tarefa do LED para ser executada via a interrupção (callback) do botão da placa.)
+
+* Botão / semaphore -> PASSO A PASSO
+    # define o botão
+        #define BUT1_PIO            PIOD
+        #define BUT1_PIO_ID         16
+        #define BUT1_PIO_IDX        28
+        #define BUT1_PIO_IDX_MASK   (1u << BUT1_PIO_IDX)
+
+    # variável global do semaphore
+        SemaphoreHandle_t xSemaphore
+
+    # inclua função callback do botão
+        void but1_callback(void){
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            printf("but_callback \n");
+            xSemaphoreGiveFromISR(xSemaphore, &xHigherPriorityTaskWoken);
+            printf("semafaro tx \n");
+        }
+    
+    # modifica a task
+        static void task_led(void *pvParameters) {
+        /* We are using the semaphore for synchronisation so we create a binary
+        semaphore rather than a mutex.  We must make sure that the interrupt
+        does not attempt to use the semaphore before it is created! */
+        xSemaphore = xSemaphoreCreateBinary();
+
+        /* devemos iniciar a interrupcao no pino somente apos termos alocado
+        os recursos (no caso semaforo), nessa funcao inicializamos 
+        o botao e seu callback*/
+        /* init botão */
+        pmc_enable_periph_clk(BUT1_PIO_ID);
+        pio_configure(BUT1_PIO, PIO_INPUT, BUT1_PIO_IDX_MASK, PIO_PULLUP);
+        pio_handler_set(BUT1_PIO, BUT1_PIO_ID, BUT1_PIO_IDX_MASK, PIO_IT_FALL_EDGE, but1_callback);
+        pio_enable_interrupt(BUT1_PIO, BUT1_PIO_IDX_MASK);
+        NVIC_EnableIRQ(BUT1_PIO_ID);
+        NVIC_SetPriority(BUT1_PIO_ID, 4); // Prioridade 4
+
+        if (xSemaphore == NULL)
+            printf("falha em criar o semaforo \n");
+
+        for (;;) {
+            if( xSemaphoreTake(xSemaphore, ( TickType_t ) 500) == pdTRUE ){
+            LED_Toggle(LED0);
+            }
+        }
+        }
